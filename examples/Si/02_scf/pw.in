@@ -1,0 +1,33 @@
+&control
+  calculation = 'scf'
+  prefix = 'pw'
+  outdir = '../out'
+  pseudo_dir = './pseudo'
+  tprnfor = .true.
+  tstress = .true.
+  verbosity = 'high'
+  disk_io = 'low'
+/
+&system
+  ibrav = 0
+  nat = 2
+  ntyp = 1
+  ecutwfc = 30
+  ecutrho = 150
+  occupations = 'fixed'
+/
+&electrons
+  conv_thr = 2d-12
+  mixing_beta = 0.4
+/
+ATOMIC_SPECIES
+  Si    28.08500  Si.us.pbe.z_4.ld1.psl.v1.0.0-high.upf
+CELL_PARAMETERS angstrom
+     -0.0000000000      2.7344782662      2.7344782662
+      2.7344782662      0.0000000000      2.7344782662
+      2.7344782662      2.7344782662      0.0000000000
+ATOMIC_POSITIONS crystal
+  Si     -0.0000000000     -0.0000000000      0.0000000000
+  Si      0.2500000000      0.2500000000      0.2500000000
+K_POINTS automatic
+  8 8 8 0 0 0

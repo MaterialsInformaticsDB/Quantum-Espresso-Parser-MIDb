@@ -1,0 +1,6 @@
+&projwfc
+  prefix = 'pw'
+  outdir = './out'
+  filpdos = 'pw'
+  DeltaE = 0.01
+/

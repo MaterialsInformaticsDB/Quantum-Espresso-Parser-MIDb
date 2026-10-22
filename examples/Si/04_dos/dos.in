@@ -1,0 +1,6 @@
+&dos
+  prefix = 'pw'
+  outdir = './out'
+  fildos = 'pw.dos'
+  DeltaE = 0.01
+/

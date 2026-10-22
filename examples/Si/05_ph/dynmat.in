@@ -1,0 +1,7 @@
+&input
+  fildyn = 'dyn1'
+  asr = 'crystal'
+  filout = 'gamma.modes'
+  filmol = 'gamma.molden'
+  filxsf = 'gamma.axsf'
+/

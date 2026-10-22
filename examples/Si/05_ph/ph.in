@@ -1,0 +1,12 @@
+phonons
+&inputph
+  prefix = 'pw'
+  outdir = '../out'
+  fildyn = 'dyn'
+  tr2_ph = 1d-14
+  ldisp = .true.
+  epsil = .true.
+  nq1 = 4
+  nq2 = 4
+  nq3 = 4
+/

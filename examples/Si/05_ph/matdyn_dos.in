@@ -1,0 +1,11 @@
+&input
+  asr = 'crystal'
+  flfrc = 'ifc'
+  dos = .true.
+  fldos = 'phdos'
+  flfrq = 'phdos.freq'
+  deltaE = 1
+  nk1 = 30
+  nk2 = 30
+  nk3 = 30
+/

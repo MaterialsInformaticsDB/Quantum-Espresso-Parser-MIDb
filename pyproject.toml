@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantum-espresso-parser-midb"
+version = "0.1.0"
+description = "Quantum ESPRESSO outputs (pw.x, dos.x, projwfc.x, ph.x, matdyn.x, dynmat.x) to the normalized document of the MIDb Quantum ESPRESSO entry type"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "James Almeida" }]
+dependencies = ["numpy", "xmlschema>=2"]
+
+[project.optional-dependencies]
+labels = ["ase"]          # names of high-symmetry points on band/phonon paths
+symmetry = ["spglib"]     # space group of crystals
+test = ["pytest", "ase", "spglib"]
+
+[project.scripts]
+qe2midb = "qe2midb.normalize:main"
+
+[project.urls]
+Repository = "https://github.com/jamesmalmeida/Quantum-Espresso-Parser-MIDb"
+
+[tool.setuptools]
+packages = ["qe2midb"]
+
+[tool.setuptools.package-data]
+qe2midb = ["schemas/*.xsd"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
