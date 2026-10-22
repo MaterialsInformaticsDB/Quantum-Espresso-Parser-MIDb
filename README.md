@@ -106,3 +106,18 @@ for each release.
   always kept.
 - High-symmetry labels via pymatgen only when the cell is already the standard primitive one
   (ASE handles any cell).
+
+## License
+
+Copyright (C) 2026 James Almeida.
+
+This program is free software: you can redistribute it and/or modify it under the terms of
+the GNU General Public License as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version. See [LICENSE](LICENSE).
+
+Third-party files keep their own licenses: the aiida-quantumespresso fixtures in
+`tests/fixtures/qe2midb/aiida/` (MIT, see the `LICENSE.txt` there) and the Quantum ESPRESSO
+example outputs in `tests/fixtures/qe2midb/qe_examples/` (GPL-2.0-or-later). The XML schemas
+in `qe2midb/schemas/` are distributed by the Quantum ESPRESSO Foundation
+([QEF/qeschemas](https://github.com/QEF/qeschemas)), which does not state a license for them.
+

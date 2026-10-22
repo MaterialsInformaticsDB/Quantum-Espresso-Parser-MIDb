@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,6 +7,8 @@ name = "quantum-espresso-parser-midb"
 version = "0.1.0"
 description = "Quantum ESPRESSO outputs (pw.x, dos.x, projwfc.x, ph.x, matdyn.x, dynmat.x) to the normalized document of the MIDb Quantum ESPRESSO entry type"
 readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE", "tests/fixtures/qe2midb/aiida/LICENSE.txt"]
 requires-python = ">=3.9"
 authors = [{ name = "James Almeida" }]
 dependencies = ["numpy", "xmlschema>=2"]
