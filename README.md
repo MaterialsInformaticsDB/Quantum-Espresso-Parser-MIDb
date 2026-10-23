@@ -12,10 +12,7 @@ outside the folder. Supported: QE **6.3 to 7.6**.
 ## Install and use
 
 ```bash
-pip install "quantum-espresso-parser-midb[labels,symmetry] @ git+https://github.com/jamesmalmeida/Quantum-Espresso-Parser-MIDb"
-
-qe2midb CALC_FOLDER -o midb_qe.json [--id NAME] [--kind crystal|molecule]
-        [--pseudo-library "SSSP PBE efficiency v2"] [--pdos-per-atom auto|all|none] [--report]
+pip install quantum-espresso-parser-midb
 ```
 
 ```python
@@ -23,8 +20,8 @@ from qe2midb.normalize import normalize
 doc, discovery = normalize("CALC_FOLDER")
 ```
 
-Requirements: Python ≥ 3.9, numpy, xmlschema. Optional: ASE (labels of high-symmetry
-points; pymatgen is tried if ASE is missing) and spglib (space group). The official XML
+Requirements: Python ≥ 3.9, numpy, xmlschema. Optional, installed separately: ASE (labels
+of high-symmetry points; pymatgen is tried if ASE is missing) and spglib (space group). The official XML
 schemas of pw.x (19 versions, from [QEF/qeschemas](https://github.com/QEF/qeschemas)) are
 bundled in `qe2midb/schemas/`.
 
