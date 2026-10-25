@@ -1,6 +1,6 @@
 # Quantum-Espresso-Parser-MIDb
 
-`qe2midb` turns a folder of Quantum ESPRESSO outputs into `midb_qe.json`, the normalized
+`qe2midb` turns a folder with Quantum ESPRESSO outputs into `midb_qe.json`, the normalized
 document read by the "Quantum ESPRESSO" entry type of [MIDb](https://midb.cloud)
 (Materials Informatics Database). Structure, method, energetics, band structure, DOS,
 projected DOS, phonon dispersion and DOS, Γ modes with IR intensities, ε∞ and Born charges,
