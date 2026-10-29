@@ -22,7 +22,7 @@ test = ["pytest", "ase", "spglib"]
 qe2midb = "qe2midb.normalize:main"
 
 [project.urls]
-Repository = "https://github.com/jamesmalmeida/Quantum-Espresso-Parser-MIDb"
+Repository = "https://github.com/MaterialsInformaticsDB/Quantum-Espresso-Parser-MIDb"
 
 [tool.setuptools]
 packages = ["qe2midb"]
