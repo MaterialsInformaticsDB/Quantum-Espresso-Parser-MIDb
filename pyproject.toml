@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "quantum-espresso-parser-midb"
-version = "0.1.0"
+version = "0.1.1"
 description = "Quantum ESPRESSO outputs (pw.x, dos.x, projwfc.x, ph.x, matdyn.x, dynmat.x) to the normalized document of the MIDb Quantum ESPRESSO entry type"
 readme = "README.md"
 license = "GPL-3.0-or-later"
