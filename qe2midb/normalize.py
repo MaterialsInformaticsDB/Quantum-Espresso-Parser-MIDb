@@ -413,19 +413,9 @@ def _phonons(disc, doc, cell, pos, elements, base, crystal, warn):
                               "ir_intensity": ir.get(i + 1), "displacement": _r(m["eigvec"], 5)}
                              for i, m in enumerate(gamma)]
     if crystal:
-        # bands.x writes the same '&plot nbnd=..' format: a phonon file has 3*nat branches
-        freq_files = [p for p in disc.text.get("matdyn_freq", []) if T.plot_file_nbnd(p) == 3 * len(elements)]
-        dos_runs = {os.path.basename(T.matdyn_input(p)["flfrq"]) for p in disc.inputs.get("matdyn", [])
-                    if T.matdyn_input(p)["dos"]}
-        path_files = [p for p in freq_files if os.path.basename(p) not in dos_runs] or freq_files
-        if path_files:
-            qcart, freqs = T.matdyn_freq(disc.latest(path_files))
-            labels = {}
-            for p in disc.inputs.get("matdyn", []):
-                mi = T.matdyn_input(p)
-                if mi["q_in_cryst_coord"]:
-                    labels.update({lab: q for q, _, lab in mi["qpoints"] if lab})
-            path = KP.build(frac_from_cart_alat(qcart, cell, base.structure()["alat_bohr"]), cell, labels or None)
+        best = _phonon_path_file(disc, cell, base, len(elements), warn)
+        if best:
+            path, freqs = best
             ph.update(path=path["path"], x=_r(path["x"], 6), ticks=path["ticks"], frequencies=_r(freqs, 3))
             ph["min_freq_cm1"] = round(float(freqs.min()), 2)
         dos_files = disc.text.get("phdos", [])
@@ -444,6 +434,48 @@ def _phonons(disc, doc, cell, pos, elements, base, crystal, warn):
         ph["n_vibrational_modes"] = len(elements) * 3 - nzero
         ph["vibrational_freqs_cm1"] = [round(f, 2) for f in freqs[nzero:]]
     return ph if len(ph) > 1 else None
+
+
+def _named(path, names):
+    """True if the file name is one of the declared names, possibly with a prefix
+    (copies of multi-step runs are often renamed, e.g. '05_ph__path.freq')."""
+    b = os.path.basename(path)
+    return any(n and (b == n or b.endswith(n)) for n in names)
+
+
+def _phonon_path_file(disc, cell, base, nat, warn):
+    """(path, frequencies) of the matdyn file holding the phonon dispersion, or None.
+
+    matdyn writes the same '&plot' format for the dispersion path and for the q-grid of
+    the phonon DOS (and bands.x for electrons). Selection: 3*nat branches; not the flfrq
+    of a matdyn DOS run (by name, prefixes allowed); the q-points must form a path (few
+    discontinuities), which a DOS grid does not."""
+    files = [p for p in disc.text.get("matdyn_freq", []) if T.plot_file_nbnd(p) == 3 * nat]
+    inputs = [T.matdyn_input(p) for p in disc.inputs.get("matdyn", [])]
+    dos_names = {os.path.basename(i["flfrq"]) for i in inputs if i["dos"]}
+    path_names = {os.path.basename(i["flfrq"]) for i in inputs if not i["dos"]}
+    files = [p for p in files if not _named(p, dos_names)] or files
+    labels = {}
+    for i in inputs:
+        if i["q_in_cryst_coord"]:
+            labels.update({lab: q for q, _, lab in i["qpoints"] if lab})
+    candidates = []
+    for p in files:
+        qcart, freqs = T.matdyn_freq(p)
+        if len(qcart) < 2:
+            continue
+        path = KP.build(frac_from_cart_alat(qcart, cell, base.structure()["alat_bohr"]), cell, labels or None)
+        jumps = path["path"].count(",")
+        if jumps <= max(2, len(qcart) // 20):                      # a path, not a q-grid
+            candidates.append((not _named(p, path_names), jumps, -os.path.getmtime(p), p, path, freqs))
+    if not candidates:
+        if files:
+            warn.append("phonon dispersion omitted: the q-points of the matdyn files do not form a path")
+        return None
+    *_, chosen, path, freqs = min(candidates, key=lambda c: c[:3])
+    if len(candidates) > 1:
+        warn.append(f"several phonon paths found; using {os.path.relpath(chosen, disc.directory)}")
+    return path, freqs
 
 
 def main(argv=None):

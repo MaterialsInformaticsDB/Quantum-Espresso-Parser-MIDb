@@ -200,3 +200,38 @@ def test_example_end_to_end():
     assert _diff(json.load(open(EXPECTED)), doc) == []
     assert doc["energetics"]["gap_eV"] == pytest.approx(0.6107, abs=1e-4)
     assert doc["bands"]["path"] == "GXWKGLUWLK,UX" and doc["phonons"]["path"] == "GXWKGLUWLK,UX"
+
+
+# ------------------------------------------------------------------ issue #1: phonon path file
+def _flatten(src, dst):
+    """Copy a multi-step run into one folder as '<step>__<file>' (as in MIDb upload packages)."""
+    for root, _, files in os.walk(src):
+        for f in files:
+            rel = os.path.relpath(os.path.join(root, f), src)
+            shutil.copy(os.path.join(root, f), os.path.join(dst, rel.replace(os.sep, "__")))
+
+
+def test_phonon_path_with_prefixed_file_names(tmp_path):
+    """The q-grid file of the phonon DOS (phdos.freq) must not be taken for the dispersion
+    when file names carry a prefix (05_ph__phdos.freq). Regression test for issue #1."""
+    _flatten(EXAMPLE, str(tmp_path))
+    grid = tmp_path / "05_ph__phdos.freq"
+    os.utime(grid, (grid.stat().st_atime, grid.stat().st_mtime + 3600))          # newest file
+    doc, _ = normalize(str(tmp_path), system_id="Si", pseudo_library="SSSP PBE efficiency v2")
+    expected = json.load(open(EXPECTED))
+    assert doc["phonons"]["path"] == "GXWKGLUWLK,UX"
+    assert _diff(expected["phonons"], doc["phonons"]) == []
+
+
+def test_phonon_path_recognized_by_content(tmp_path):
+    """Without matdyn inputs and with an uninformative name, the q-grid file is still
+    rejected because its q-points do not form a path."""
+    _flatten(EXAMPLE, str(tmp_path))
+    for f in tmp_path.glob("05_ph__matdyn_*.in"):
+        f.unlink()
+    grid = tmp_path / "05_ph__phdos.freq"
+    other = tmp_path / "something.dat"
+    grid.rename(other)
+    os.utime(other, (other.stat().st_atime, other.stat().st_mtime + 3600))
+    doc, _ = normalize(str(tmp_path), system_id="Si")
+    assert doc["phonons"]["path"] == "GXWKGLUWLK,UX" and len(doc["phonons"]["x"]) == 200
